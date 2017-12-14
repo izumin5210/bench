@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package api;
+
+import "google/api/annotations.proto";
+
+service AuthService {
+  rpc GetAuthorizeURL(Empty) returns (AuthorizeURLResponse) {
+    option (google.api.http) = {
+      get: "/authorize_url"
+    };
+  }
+  rpc Callback(CallbackRequest) returns (Empty) {
+    option (google.api.http) = {
+      get: "/authorize_callback"
+    };
+  }
+}
+
+message Empty {
+}
+
+message AuthorizeURLResponse {
+  string url = 1;
+}
+
+message CallbackRequest {
+  string code = 1;
+}
