@@ -1,3 +1,4 @@
+FROM node:8.9.3-alpine as node
 FROM golang:1.9.2-alpine3.6
 
 RUN apk add --no-cache --update \
@@ -5,16 +6,18 @@ RUN apk add --no-cache --update \
     openssl \
   && update-ca-certificates
 
+
 #  glibc (https://github.com/sgerrand/alpine-pkg-glibc)
 #-----------------------------------------------
 # @see http://qiita.com/tkusumi/items/1668df2fc4cf61a68282
+ENV GLIBC_VERSION 2.26-r0
 RUN apk add --no-cache --update --virtual .build-deps \
     wget \
   && wget -q -O /etc/apk/keys/sgerrand.rsa.pub \
-    https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub \
-  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk \
+    https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/$GLIBC_VERSION/sgerrand.rsa.pub \
+  && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.26-r0/glibc-$GLIBC_VERSION.apk \
   && apk del .build-deps \
-  && apk add glibc-2.25-r0.apk
+  && apk add glibc-$GLIBC_VERSION.apk
 
 
 #  Build dependencies
@@ -25,6 +28,14 @@ RUN apk add --no-cache --update \
     make \
   && go get -u github.com/derekparker/delve/cmd/dlv \
   && go get -u github.com/golang/lint/golint
+
+
+#  Node.js
+#-----------------------------------------------
+COPY --from=node /opt/yarn /opt/yarn
+COPY --from=node /usr/local/bin/node /usr/local/bin/
+RUN ln -s /opt/yarn/bin/yarn /usr/local/bin/yarn \
+  && ln -s /opt/yarn/bin/yarn /usr/local/bin/yarnpkg
 
 
 #  protobuf

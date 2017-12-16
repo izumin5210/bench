@@ -6,6 +6,7 @@ services:
     volumes:
       - ..:/app
       - vendor:/app/vendor
+      - frontend:/app/node_modules
     extra_hosts:
       localhost: "${DOCKER_HOST_IP}"
     ports:
