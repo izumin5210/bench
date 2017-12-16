@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    volumes:
+      - ..:/app
+      - vendor:/app/vendor
+    extra_hosts:
+      localhost: "${DOCKER_HOST_IP}"
+    ports:
+      - 3000:3000
+    command: tail -f /dev/null
+
+volumes:
+  vendor:
