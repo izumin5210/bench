@@ -52,6 +52,10 @@ $(foreach proto,$(PROTOS),$(eval $(call proto-gw-out-tmpl,$(proto))))
 .PHONY: all
 all: $(BIN)
 
+.PHONY: run
+run: $(BIN)
+	@$(BIN)
+
 $(BIN): $(SRC_FILES) $(PROTO_GO_OUTS) $(PROTO_GW_OUTS)
 	@echo "Build $@"
 	@go build $(GO_BUILD_FLAGS) -o $(BIN) main.go
