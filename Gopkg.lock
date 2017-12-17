@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  name = "github.com/asaskevich/govalidator"
+  packages = ["."]
+  revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
+  version = "v8"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/creasty/configo"
+  packages = ["."]
+  revision = "288b7e8980d293cb5a71a4be33706dab34ad56ea"
+
+[[projects]]
+  name = "github.com/ghodss/yaml"
+  packages = ["."]
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/glog"
   packages = ["."]
@@ -18,6 +36,24 @@
   packages = ["protoc-gen-grpc-gateway","protoc-gen-grpc-gateway/descriptor","protoc-gen-grpc-gateway/generator","protoc-gen-grpc-gateway/gengateway","protoc-gen-grpc-gateway/httprule","runtime","runtime/internal","utilities"]
   revision = "8cc3a55af3bcf171a1c23a90c4df9cf591706104"
   version = "v1.3"
+
+[[projects]]
+  name = "github.com/joho/godotenv"
+  packages = ["."]
+  revision = "a79fa1e548e2c689c241d10173efd51e5d689d5b"
+  version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/kelseyhightower/envconfig"
+  packages = ["."]
+  revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
+  version = "v1.3.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mattn/go-zglob"
+  packages = [".","fastwalk"]
+  revision = "4b74c24375b3b1ee226867156e01996f4e19a8d6"
 
 [[projects]]
   name = "github.com/soheilhy/cmux"
@@ -49,9 +85,15 @@
   revision = "e687fa4e6424368ece6e4fe727cea2c806a0fcb4"
   version = "v1.8.2"
 
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "287cf08546ab5e7e37d55a84f7ed3fd1db036de5"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "936ef153af3e9ad716ef059129df88874276d27b7172bc68bb4943d92b3c4e26"
+  inputs-digest = "cb770c77e3592b7f29f0a540e1187f9a0ae50cf79552405e77cd5edf57e3fc46"
   solver-name = "gps-cdcl"
   solver-version = 1

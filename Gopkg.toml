@@ -36,3 +36,7 @@ required = [
 [[constraint]]
   name = "github.com/soheilhy/cmux"
   version = "^0.1.3"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/creasty/configo"
