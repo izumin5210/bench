@@ -12,8 +12,10 @@
   "repository": "git@github.com:izumin5210/bench.git",
   "devDependencies": {
     "awesome-typescript-loader": "^3.4.1",
+    "html-webpack-plugin": "^2.30.1",
     "source-map-loader": "^0.2.3",
     "typescript": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.9.7"
   }
 }
