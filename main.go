@@ -8,7 +8,13 @@ import (
 )
 
 func main() {
-	if err := server.Run(); err != nil {
+	cnf, err := server.LoadConfig()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err = server.Run(cnf); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

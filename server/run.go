@@ -25,8 +25,8 @@ var (
 )
 
 // Run starts a gRPC server
-func Run() error {
-	lis, err := net.Listen("tcp", ":3000")
+func Run(cnf *Config) error {
+	lis, err := net.Listen("tcp", cnf.Host)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,7 @@ func Run() error {
 	mux := cmux.New(lis)
 
 	grpcServer := createGrpcServer()
-	gatewayServer, err := createGatewayServer(ctx)
+	gatewayServer, err := createGatewayServer(ctx, cnf)
 
 	if err != nil {
 		return err
@@ -56,13 +56,13 @@ func createGrpcServer() *grpc.Server {
 	return s
 }
 
-func createGatewayServer(c context.Context) (http.Handler, error) {
+func createGatewayServer(c context.Context, cnf *Config) (http.Handler, error) {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{
 		grpc.WithInsecure(),
 	}
 	var err error
-	err = api.RegisterAuthServiceHandlerFromEndpoint(c, mux, ":3000", opts)
+	err = api.RegisterAuthServiceHandlerFromEndpoint(c, mux, cnf.Host, opts)
 	if err != nil {
 		return nil, err
 	}
