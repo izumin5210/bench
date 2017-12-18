@@ -12,6 +12,7 @@ import (
 
 	"github.com/izumin5210/bench/api"
 	"github.com/izumin5210/bench/app/auth"
+	"github.com/izumin5210/bench/infra"
 )
 
 var (
@@ -36,7 +37,7 @@ func Run(cnf *Config) error {
 
 	mux := cmux.New(lis)
 
-	grpcServer := createGrpcServer()
+	grpcServer := createGrpcServer(cnf)
 	gatewayServer, err := createGatewayServer(ctx, cnf)
 
 	if err != nil {
@@ -49,9 +50,11 @@ func Run(cnf *Config) error {
 	return mux.Serve()
 }
 
-func createGrpcServer() *grpc.Server {
+func createGrpcServer(cnf *Config) *grpc.Server {
 	s := grpc.NewServer()
-	api.RegisterAuthServiceServer(s, auth.New())
+	api.RegisterAuthServiceServer(s, auth.New(
+		infra.NewAuthRepo(cnf.Github.ClientID, cnf.Github.ClientSecret, cnf.Github.RedirectURL),
+	))
 	reflection.Register(s)
 	return s
 }
