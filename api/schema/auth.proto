@@ -7,12 +7,12 @@ import "google/api/annotations.proto";
 service AuthService {
   rpc GetAuthorizeURL(Empty) returns (AuthorizeURLResponse) {
     option (google.api.http) = {
-      get: "/authorize_url"
+      get: "/auth/url"
     };
   }
-  rpc Callback(CallbackRequest) returns (Empty) {
+  rpc Authorize(AuthorizeRequest) returns (AccessToken) {
     option (google.api.http) = {
-      get: "/authorize_callback"
+      post: "/auth"
     };
   }
 }
@@ -24,6 +24,10 @@ message AuthorizeURLResponse {
   string url = 1;
 }
 
-message CallbackRequest {
+message AuthorizeRequest {
   string code = 1;
+}
+
+message AccessToken {
+  string token = 1;
 }
