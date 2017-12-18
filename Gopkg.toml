@@ -40,3 +40,7 @@ required = [
 [[constraint]]
   branch = "master"
   name = "github.com/creasty/configo"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/oauth2"
