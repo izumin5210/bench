@@ -1,3 +1,4 @@
+const { DefinePlugin } = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 module.exports = {
@@ -25,6 +26,10 @@ module.exports = {
       title: "bench",
       template: __dirname + "/src/index.html",
       filename: __dirname + "/dist/index.html",
+    }),
+    new DefinePlugin({
+      "process.env.NODE_ENV": JSON.stringify(process.env.APP_ENV),
+      "process.env.GITHUB_CLIENT_ID": JSON.stringify(process.env.GITHUB_CLIENT_ID),
     }),
   ],
 }
