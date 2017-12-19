@@ -8,6 +8,8 @@ services:
       - vendor:/app/vendor
       - node_modules:/app/frontend/node_modules
       - yarn_cache:/usr/local/share/.cache/yarn/v1
+    env_file:
+      - ../.env
     extra_hosts:
       localhost: "${DOCKER_HOST_IP}"
     ports:
