@@ -23,15 +23,15 @@ export const actions = {
 
 //  State & Reducer
 //================================================================
-export interface State {
+export interface AuthState {
   accessToken: AccessToken | null
 }
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: AuthState = {
   accessToken: null,
 }
 
-export function createAuthReducer(initialState: State = INITIAL_STATE) {
+export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
   return reducerWithInitialState(initialState)
     .caseWithAction(fetchAccessToken.done, (state, { payload: { result: accessToken } }) => ({
       ...state,
