@@ -25,17 +25,24 @@ export const actions = {
 //================================================================
 export interface AuthState {
   accessToken: AccessToken | null
+  fetchStatus: "none" | "loading" | "loaded" | "failed"
 }
 
 const INITIAL_STATE: AuthState = {
   accessToken: null,
+  fetchStatus: "none",
 }
 
 export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
   return reducerWithInitialState(initialState)
+    .caseWithAction(fetchAccessToken.started, (state) => ({
+      ...state,
+      fetchStatus: "loading",
+    }))
     .caseWithAction(fetchAccessToken.done, (state, { payload: { result: accessToken } }) => ({
       ...state,
       accessToken,
+      fetchStatus: "loaded",
     }))
     .build()
 }
