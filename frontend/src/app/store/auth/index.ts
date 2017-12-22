@@ -1,11 +1,11 @@
 // for actions
-import actionCreatorFactory from "typescript-fsa"
+import actionCreatorFactory, { Action } from "typescript-fsa"
 
 // for reducers
 import { reducerWithInitialState } from "typescript-fsa-reducers"
 
 // for epics
-import "rxjs"
+import { Observable } from "rxjs"
 import "typescript-fsa-redux-observable"
 import { combineEpics } from "redux-observable"
 
@@ -16,7 +16,7 @@ import AuthRepository from "../../../domain/AuthRepository"
 //  Actions
 //================================================================
 const actionCreator = actionCreatorFactory("auth")
-const fetchAccessToken = actionCreator.async<{ state: string, code: string }, AccessToken>("getAccessToken")
+const fetchAccessToken = actionCreator.async<{ state: string | null, code: string | null }, AccessToken>("getAccessToken")
 export const actions = {
   fetchAccessToken: fetchAccessToken.started,
 }
@@ -46,9 +46,15 @@ export function createAuthEpic(repo: AuthRepository) {
   return combineEpics(
     action$ =>
       action$.ofAction(fetchAccessToken.started)
-        .flatMap(({ payload }) =>
-          repo.fechAccessToken({ code: payload.code, state: payload.state })
-            .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken }))
-        ),
+        .flatMap(({ payload }): Observable<Action<any>> => {
+          const { code, state } = payload
+          if (code == null || state == null) {
+            return Observable.of(fetchAccessToken.failed({ params: payload, error: new Error() }))
+          }
+          return Observable.fromPromise(
+            repo.fechAccessToken({ code, state })
+              .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
+          )
+        }),
   )
 }
