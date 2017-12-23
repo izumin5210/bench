@@ -1,5 +1,6 @@
-import AuthRepository from "../domain/AuthRepository"
-import config from "../common/config"
+import AuthRepository from "domain/AuthRepository"
+import config from "common/config"
+
 import { getAccessToken, setAccessToken } from "./localStorage"
 
 export default class AuthRepositoryImpl implements AuthRepository {

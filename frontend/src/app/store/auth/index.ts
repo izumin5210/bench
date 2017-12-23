@@ -6,12 +6,12 @@ import { reducerWithInitialState } from "typescript-fsa-reducers"
 
 // for epics
 import { Observable } from "rxjs"
-import "typescript-fsa-redux-observable"
 import { combineEpics } from "redux-observable"
+import "typescript-fsa-redux-observable"
 
 // domain
-import AccessToken from "../../../domain/AccessToken";
-import AuthRepository from "../../../domain/AuthRepository"
+import AccessToken from "domain/AccessToken";
+import AuthRepository from "domain/AuthRepository"
 
 //  Actions
 //================================================================

@@ -5,7 +5,7 @@ import { combineEpics, createEpicMiddleware } from "redux-observable"
 import { createAuthReducer, createAuthEpic } from "./auth"
 
 // dependencies
-import AuthRepository from "../../domain/AuthRepository"
+import AuthRepository from "domain/AuthRepository"
 
 function createRedcuer() {
   return combineReducers({
