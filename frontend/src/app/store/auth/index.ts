@@ -59,7 +59,7 @@ export function createAuthEpic(repo: AuthRepository) {
             return Observable.of(fetchAccessToken.failed({ params: payload, error: new Error() }))
           }
           return Observable.fromPromise(
-            repo.fechAccessToken({ code, state })
+            repo.fetchAccessToken({ code, state })
               .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
           )
         }),

@@ -4,7 +4,7 @@ import config from "common/config"
 import { getAccessToken, setAccessToken } from "./localStorage"
 
 export default class AuthRepositoryImpl implements AuthRepository {
-  fechAccessToken({ code, state }: { code: string, state: string }) {
+  fetchAccessToken({ code, state }: { code: string, state: string }) {
     return fetch(`${config.apiEndpoint}/auth`, { method: 'POST', body: { code, state } })
       .then(res => res.json())
       .then(({ accessToken }) => {
