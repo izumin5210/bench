@@ -7,7 +7,7 @@ import { reducerWithInitialState } from "typescript-fsa-reducers"
 // for epics
 import { Observable } from "rxjs"
 import { combineEpics } from "redux-observable"
-import "typescript-fsa-redux-observable"
+import "common/typescript-fsa-redux-observable"
 
 // domain
 import AccessToken from "domain/AccessToken";
