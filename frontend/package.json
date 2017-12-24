@@ -38,7 +38,6 @@
     "redux-observable": "^0.17.0",
     "rxjs": "^5.5.5",
     "typescript-fsa": "^2.5.0",
-    "typescript-fsa-reducers": "^0.4.5",
-    "typescript-fsa-redux-observable": "^0.17.0"
+    "typescript-fsa-reducers": "^0.4.5"
   }
 }
