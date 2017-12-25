@@ -1,10 +1,11 @@
 // for actions
-import actionCreatorFactory, { Action } from "typescript-fsa"
+import actionCreatorFactory from "typescript-fsa"
 
 // for reducers
 import { reducerWithInitialState } from "typescript-fsa-reducers"
 
 // for epics
+import { Action, Store } from "redux";
 import { Observable } from "rxjs"
 import { combineEpics } from "redux-observable"
 import "common/typescript-fsa-redux-observable"
@@ -49,17 +50,17 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
 
 //  Epics
 //================================================================
-export function createAuthEpic(repo: AuthRepository) {
+export function createAuthEpic({ authRepository }: { authRepository: AuthRepository }) {
   return combineEpics(
     action$ =>
       action$.ofAction(fetchAccessToken.started)
-        .flatMap(({ payload }): Observable<Action<any>> => {
+        .flatMap(({ payload }): Observable<Action> => {
           const { code, state } = payload
           if (code == null || state == null) {
             return Observable.of(fetchAccessToken.failed({ params: payload, error: new Error() }))
           }
           return Observable.fromPromise(
-            repo.fetchAccessToken({ code, state })
+            authRepository.fetchAccessToken({ code, state })
               .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
           )
         }),

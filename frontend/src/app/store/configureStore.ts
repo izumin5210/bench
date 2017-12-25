@@ -7,23 +7,27 @@ import { createAuthReducer, createAuthEpic } from "./auth"
 // dependencies
 import AuthRepository from "domain/AuthRepository"
 
+interface Dependencies {
+  authRepository: AuthRepository
+}
+
 function createRedcuer() {
   return combineReducers({
     auth: createAuthReducer(),
   })
 }
 
-function createEpic(authRepo: AuthRepository) {
+function createEpic(deps: Dependencies) {
   return combineEpics(
-     createAuthEpic(authRepo),
+     createAuthEpic(deps),
   )
 }
 
-export default function configureStore(authRepo: AuthRepository) {
+export default function configureStore(deps: Dependencies) {
   const store = createStore(
     createRedcuer(),
     applyMiddleware(
-      createEpicMiddleware(createEpic(authRepo)),
+      createEpicMiddleware(createEpic(deps)),
     ),
   )
 
