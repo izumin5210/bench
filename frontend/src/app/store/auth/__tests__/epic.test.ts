@@ -14,12 +14,13 @@ describe("authEpic", () => {
         fetchAccessToken: jest.fn().mockReturnValueOnce(Promise.resolve({ token: "foobarbaz" })),
     }))
     const repo = new MockAuthRepository()
-    const epic = createAuthEpic({ authRepository: repo })
-    const mockStore = configureMockStore<any>([createEpicMiddleware(epic)])
+    const epic = createAuthEpic()
+    const dependencies = { authRepository: repo }
+    const mockStore = configureMockStore<any>([createEpicMiddleware(epic, { dependencies })])
     const store = mockStore()
     const action = actions.fetchAccessToken({ state: "foo", code: "bar" })
 
-    const gotActions = await epic(ActionsObservable.of(action), store, {}).toArray().toPromise()
+    const gotActions = await epic(ActionsObservable.of(action), store, dependencies).toArray().toPromise()
 
     expect(repo.fetchAccessToken).toBeCalledWith({ state: "foo", code: "bar" })
     expect(gotActions).toHaveLength(1)

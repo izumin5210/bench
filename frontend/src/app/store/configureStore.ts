@@ -17,17 +17,17 @@ function createRedcuer() {
   })
 }
 
-function createEpic(deps: Dependencies) {
+function createEpic() {
   return combineEpics(
-     createAuthEpic(deps),
+     createAuthEpic(),
   )
 }
 
-export default function configureStore(deps: Dependencies) {
+export default function configureStore(dependencies: Dependencies) {
   const store = createStore(
     createRedcuer(),
     applyMiddleware(
-      createEpicMiddleware(createEpic(deps)),
+      createEpicMiddleware(createEpic(), { dependencies }),
     ),
   )
 

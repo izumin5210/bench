@@ -50,9 +50,9 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
 
 //  Epics
 //================================================================
-export function createAuthEpic({ authRepository }: { authRepository: AuthRepository }) {
-  return combineEpics(
-    action$ =>
+export function createAuthEpic() {
+  return combineEpics<Action, Store<AuthState>, { authRepository: AuthRepository }>(
+    (action$, _, { authRepository }) =>
       action$.ofAction(fetchAccessToken.started)
         .flatMap(({ payload }): Observable<Action> => {
           const { code, state } = payload
