@@ -27,15 +27,19 @@ export const actions = {
 //================================================================
 export interface AuthState {
   accessToken: AccessToken | null
+  oauthState: string | null
   fetchStatus: {
     accessToken: FetchStatus,
+    oauthState: FetchStatus,
   }
 }
 
 const INITIAL_STATE: AuthState = {
   accessToken: null,
+  oauthState: null,
   fetchStatus: {
     accessToken: "none",
+    oauthState: "none",
   },
 }
 
