@@ -13,6 +13,7 @@ import "common/typescript-fsa-redux-observable"
 // domain
 import AccessToken from "domain/AccessToken";
 import AuthRepository from "domain/AuthRepository"
+import { FetchStatus } from "domain/FetchStatus";
 
 //  Actions
 //================================================================
@@ -26,24 +27,34 @@ export const actions = {
 //================================================================
 export interface AuthState {
   accessToken: AccessToken | null
-  fetchStatus: "none" | "loading" | "loaded" | "failed"
+  fetchStatus: {
+    accessToken: FetchStatus,
+  }
 }
 
 const INITIAL_STATE: AuthState = {
   accessToken: null,
-  fetchStatus: "none",
+  fetchStatus: {
+    accessToken: "none",
+  },
 }
 
 export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
   return reducerWithInitialState(initialState)
     .caseWithAction(fetchAccessToken.started, (state) => ({
       ...state,
-      fetchStatus: "loading",
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "loading",
+      },
     }))
     .caseWithAction(fetchAccessToken.done, (state, { payload: { result: accessToken } }) => ({
       ...state,
       accessToken,
-      fetchStatus: "loaded",
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "loaded",
+      },
     }))
     .build()
 }
