@@ -18,8 +18,11 @@ import { FetchStatus } from "domain/FetchStatus";
 //  Actions
 //================================================================
 const actionCreator = actionCreatorFactory("auth")
+const createOauthState = actionCreator.async<{}, { state: string }>("craeteOauthState")
 const fetchAccessToken = actionCreator.async<{ state: string | null, code: string | null }, AccessToken>("getAccessToken")
+
 export const actions = {
+  createOauthState: createOauthState.started,
   fetchAccessToken: fetchAccessToken.started,
 }
 
@@ -60,13 +63,30 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
         accessToken: "loaded",
       },
     }))
+    .caseWithAction(createOauthState.started, (state) => ({
+      ...state,
+      fetchStatus: {
+        ...state.fetchStatus,
+        oauthState: "loading",
+      },
+    }))
+    .caseWithAction(createOauthState.done, (state, { payload: { result: { state: oauthState }} }) => ({
+      ...state,
+      oauthState,
+      fetchStatus: {
+        ...state.fetchStatus,
+        oauthState: "loaded",
+      },
+    }))
     .build()
 }
 
 //  Epics
 //================================================================
+
 export function createAuthEpic() {
   return combineEpics<Action, Store<AuthState>, { authRepository: AuthRepository }>(
+    // an epic for fetchAccessToken.started
     (action$, _, { authRepository }) =>
       action$.ofAction(fetchAccessToken.started)
         .flatMap(({ payload }): Observable<Action> => {
@@ -79,5 +99,13 @@ export function createAuthEpic() {
               .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
           )
         }),
+    // an epic for createOauthState.started
+    (action$, _, { authRepository }) =>
+        action$.ofAction(createOauthState.started)
+          .flatMap(({ payload }): Observable<Action> => {
+            const state = new Date().getTime().toString() // TODO: should use random string
+            return Observable.fromPromise(authRepository.setOauthState(state))
+              .map(() => createOauthState.done({ params: payload, result: { state }}))
+          })
   )
 }

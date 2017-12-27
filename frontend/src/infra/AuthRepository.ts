@@ -1,9 +1,18 @@
 import AuthRepository from "domain/AuthRepository"
 import config from "common/config"
 
-import { getAccessToken, setAccessToken } from "./localStorage"
+import { setOauthState, getOauthState, getAccessToken, setAccessToken } from "./localStorage"
 
 export default class AuthRepositoryImpl implements AuthRepository {
+  setOauthState(state: string) {
+    setOauthState(state)
+    return Promise.resolve()
+  }
+
+  getOauthState() {
+    return Promise.resolve(getOauthState())
+  }
+
   fetchAccessToken({ code, state }: { code: string, state: string }) {
     return fetch(`${config.apiEndpoint}/auth`, { method: 'POST', body: { code, state } })
       .then(res => res.json())
