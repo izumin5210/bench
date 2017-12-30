@@ -44,7 +44,7 @@ const withConnector = connect(
     oauthState: getOauthState(state),
   }),
   (dispatch: Dispatch<any>) => ({
-    createOauthState: () => dispatch(actions.createOauthState({})),
+    createOauthState: () => dispatch(actions.getOauthState({ create: true })),
   }),
 )
 

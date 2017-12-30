@@ -18,11 +18,11 @@ import { FetchStatus } from "domain/FetchStatus";
 //  Actions
 //================================================================
 const actionCreator = actionCreatorFactory("auth")
-const createOauthState = actionCreator.async<{}, { state: string }>("craeteOauthState")
+const getOauthState = actionCreator.async<{ create: boolean }, { state: string }>("getOauthState")
 const fetchAccessToken = actionCreator.async<{ state: string | null, code: string | null }, AccessToken>("getAccessToken")
 
 export const actions = {
-  createOauthState: createOauthState.started,
+  getOauthState: getOauthState.started,
   fetchAccessToken: fetchAccessToken.started,
 }
 
@@ -70,7 +70,7 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
         oauthState: "loading",
       },
     }))
-    .caseWithAction(createOauthState.done, (state, { payload: { result: { state: oauthState }} }) => ({
+    .caseWithAction(getOauthState.done, (state, { payload: { result: { state: oauthState }} }) => ({
       ...state,
       oauthState,
       fetchStatus: {
@@ -99,9 +99,9 @@ export function createAuthEpic() {
               .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
           )
         }),
-    // an epic for createOauthState.started
+    // an epic for getOauthState.started
     (action$, _, { authRepository }) =>
-        action$.ofAction(createOauthState.started)
+        action$.ofAction(getOauthState.started)
           .flatMap(({ payload }): Observable<Action> => {
             const state = new Date().getTime().toString() // TODO: should use random string
             return Observable.fromPromise(authRepository.setOauthState(state))
