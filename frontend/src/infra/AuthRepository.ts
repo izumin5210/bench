@@ -10,7 +10,11 @@ export default class AuthRepositoryImpl implements AuthRepository {
   }
 
   getOauthState() {
-    return Promise.resolve(getOauthState())
+    const state = getOauthState()
+    if (state == null) {
+      return Promise.reject(new Error())
+    }
+    return Promise.resolve(state)
   }
 
   fetchAccessToken({ code, state }: { code: string, state: string }) {
