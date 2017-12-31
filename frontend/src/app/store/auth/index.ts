@@ -63,7 +63,14 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
         accessToken: "loaded",
       },
     }))
-    .caseWithAction(createOauthState.started, (state) => ({
+    .caseWithAction(fetchAccessToken.failed, state => ({
+      ...state,
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "failed",
+      },
+    }))
+    .caseWithAction(getOauthState.started, (state) => ({
       ...state,
       fetchStatus: {
         ...state.fetchStatus,
@@ -76,6 +83,13 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
       fetchStatus: {
         ...state.fetchStatus,
         oauthState: "loaded",
+      },
+    }))
+    .caseWithAction(getOauthState.failed, state => ({
+      ...state,
+      fetchStatus: {
+        ...state.fetchStatus,
+        oauthState: "failed",
       },
     }))
     .build()
@@ -103,9 +117,16 @@ export function createAuthEpic() {
     (action$, _, { authRepository }) =>
         action$.ofAction(getOauthState.started)
           .flatMap(({ payload }): Observable<Action> => {
-            const state = new Date().getTime().toString() // TODO: should use random string
-            return Observable.fromPromise(authRepository.setOauthState(state))
-              .map(() => createOauthState.done({ params: payload, result: { state }}))
+            let o: Observable<string>
+            if (payload.create) {
+              const state = new Date().getTime().toString() // TODO: should use random string
+              o = Observable.fromPromise(authRepository.setOauthState(state).then(() => state))
+            } else {
+              o = Observable.fromPromise(authRepository.getOauthState())
+            }
+            return o
+              .map(state => getOauthState.done({ params: payload, result: { state } }))
+              .catch(error => Observable.of(getOauthState.failed({ params: payload, error })))
           })
   )
 }
