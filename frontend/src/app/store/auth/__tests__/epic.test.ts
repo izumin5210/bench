@@ -6,7 +6,7 @@ import AuthRepository from "domain/AuthRepository";
 
 // target
 import { actions, createAuthEpic } from "../"
-import { Action, Success } from "typescript-fsa";
+import { Action, Success, Failure } from "typescript-fsa";
 
 const createTestContext = (authRepository: AuthRepository) => {
   const dependencies = { authRepository }
@@ -19,20 +19,57 @@ const createTestContext = (authRepository: AuthRepository) => {
 }
 
 describe("fetchAccessToken.started", () => {
-  describe("when an oauth state exists", () => {
+  describe("when an oauth state are stored", () => {
     it("maps a doen action with retrieved an access token", async () => {
       const MockAuthRepository = jest.fn<AuthRepository>(() => ({
           fetchAccessToken: jest.fn().mockReturnValueOnce(Promise.resolve({ token: "foo" })),
+          getOauthState: jest.fn().mockReturnValue(Promise.resolve("bar")),
       }))
       const repo = new MockAuthRepository()
       const { dispatch } = createTestContext(repo)
 
-      const action = actions.fetchAccessToken({ state: "bar", code: "baz" })
+      const action = actions.fetchAccessToken({ code: "baz" })
       const gotActions = await dispatch(action)
 
       expect(repo.fetchAccessToken).toBeCalledWith({ state: "bar", code: "baz" })
       expect(gotActions).toHaveLength(1)
       expect((gotActions[0] as Action<Success<any, any>>).payload.result).toEqual({ token: "foo" })
+    })
+  })
+
+  describe("when oauth states are not stored", () => {
+    it("maps an error action", async () => {
+      const MockAuthRepository = jest.fn<AuthRepository>(() => ({
+          fetchAccessToken: jest.fn().mockReturnValueOnce(Promise.resolve({ token: "foo" })),
+          getOauthState: jest.fn().mockReturnValue(Promise.reject("Error occurred!")),
+      }))
+      const repo = new MockAuthRepository()
+      const { dispatch } = createTestContext(repo)
+
+      const action = actions.fetchAccessToken({ code: "baz" })
+      const gotActions = await dispatch(action)
+
+      expect(repo.fetchAccessToken).not.toBeCalled()
+      expect(gotActions).toHaveLength(1)
+      expect((gotActions[0] as Action<Failure<any, any>>).payload.error).toBe("Error occurred!")
+    })
+  })
+
+  describe("when oauth states are not stored", () => {
+    it("maps an error action", async () => {
+      const MockAuthRepository = jest.fn<AuthRepository>(() => ({
+          fetchAccessToken: jest.fn().mockReturnValueOnce(Promise.reject("Error occurred!")),
+          getOauthState: jest.fn().mockReturnValue(Promise.resolve("bar"))
+      }))
+      const repo = new MockAuthRepository()
+      const { dispatch } = createTestContext(repo)
+
+      const action = actions.fetchAccessToken({ code: "baz" })
+      const gotActions = await dispatch(action)
+
+      expect(repo.fetchAccessToken).toBeCalledWith({ state: "bar", code: "baz" })
+      expect(gotActions).toHaveLength(1)
+      expect((gotActions[0] as Action<Failure<any, any>>).payload.error).toBe("Error occurred!")
     })
   })
 })

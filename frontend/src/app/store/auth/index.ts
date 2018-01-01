@@ -19,7 +19,7 @@ import { FetchStatus } from "domain/FetchStatus";
 //================================================================
 const actionCreator = actionCreatorFactory("auth")
 const createOauthState = actionCreator.async<{}, { state: string }>("craeteOauthState")
-const fetchAccessToken = actionCreator.async<{ state: string | null, code: string | null }, AccessToken>("getAccessToken")
+const fetchAccessToken = actionCreator.async<{ code: string | null }, AccessToken>("getAccessToken")
 
 export const actions = {
   createOauthState: createOauthState.started,
@@ -90,14 +90,14 @@ export function createAuthEpic() {
     (action$, _, { authRepository }) =>
       action$.ofAction(fetchAccessToken.started)
         .flatMap(({ payload }): Observable<Action> => {
-          const { code, state } = payload
-          if (code == null || state == null) {
+          const { code } = payload
+          if (code == null) {
             return Observable.of(fetchAccessToken.failed({ params: payload, error: new Error() }))
           }
-          return Observable.fromPromise(
-            authRepository.fetchAccessToken({ code, state })
-              .then((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken })),
-          )
+          return Observable.fromPromise(authRepository.getOauthState())
+            .flatMap((state) => Observable.fromPromise(authRepository.fetchAccessToken({ code, state })))
+            .map((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken }))
+            .catch(error => Observable.of(fetchAccessToken.failed({ params: payload, error })))
         }),
     // an epic for createOauthState.started
     (action$, _, { authRepository }) =>
