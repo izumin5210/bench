@@ -9,7 +9,7 @@ import { createConfigReducer } from "./config"
 import AuthRepository from "domain/AuthRepository"
 
 // types
-import { Config } from "common/config";
+import Config from "common/config";
 
 interface Dependencies {
   authRepository: AuthRepository

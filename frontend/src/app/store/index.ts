@@ -1,5 +1,5 @@
 import { AuthState } from "./auth"
-import { Config } from "common/config";
+import Config from "common/config";
 
 export interface RootState {
   auth: AuthState
