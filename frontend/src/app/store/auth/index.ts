@@ -105,6 +105,13 @@ export function createAuthEpic() {
             .map((accessToken) => fetchAccessToken.done({ params: payload, result: accessToken }))
             .catch(error => Observable.of(fetchAccessToken.failed({ params: payload, error })))
         }),
+    // an epic for getAccessToken.started
+    (action$, _, { authRepository }) =>
+      action$.ofAction(getAccessToken.started)
+        .flatMap(({ payload }) => Observable.fromPromise(authRepository.getAccessToken())
+          .map(accessToken => getAccessToken.done({ params: payload, result: accessToken }))
+          .catch(error => Observable.of(getAccessToken.failed({ params: payload, error })))
+        ),
     // an epic for createOauthState.started
     (action$, _, { authRepository }) =>
         action$.ofAction(createOauthState.started)
@@ -112,6 +119,6 @@ export function createAuthEpic() {
             const state = new Date().getTime().toString() // TODO: should use random string
             return Observable.fromPromise(authRepository.setOauthState(state))
               .map(() => createOauthState.done({ params: payload, result: { state }}))
-          })
+          }),
   )
 }

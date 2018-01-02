@@ -74,6 +74,38 @@ describe("fetchAccessToken.started", () => {
   })
 })
 
+describe("getAccessToken.started", () => {
+  describe("when any access tokens have not been stored", async () =>{
+      const MockAuthRepository = jest.fn<AuthRepository>(() => ({
+          getAccessToken: jest.fn().mockReturnValue(Promise.reject("accessToken has not been stored"))
+      }))
+      const repo = new MockAuthRepository()
+      const { dispatch } = createTestContext(repo)
+
+      const action = actions.getAccessToken({})
+      const gotActions = await dispatch(action)
+
+      expect(repo.getAccessToken).toBeCalled()
+      expect(gotActions).toHaveLength(1)
+      expect((gotActions[0] as Action<Failure<any, any>>).payload.error).toBe("accessToken has not been stored")
+  })
+
+  describe("when an access token has been stored", async () =>{
+      const MockAuthRepository = jest.fn<AuthRepository>(() => ({
+          getAccessToken: jest.fn().mockReturnValue(Promise.resolve({ token: "testtoken" }))
+      }))
+      const repo = new MockAuthRepository()
+      const { dispatch } = createTestContext(repo)
+
+      const action = actions.getAccessToken({})
+      const gotActions = await dispatch(action)
+
+      expect(repo.getAccessToken).toBeCalled()
+      expect(gotActions).toHaveLength(1)
+      expect((gotActions[0] as Action<Success<any, any>>).payload.result).toEqual({ token: "testtoken" })
+  })
+})
+
 describe("createOauthState.started", () => {
   it("maps a done action with created an oauth token", async () => {
     const MockAuthRepository = jest.fn<AuthRepository>(() => ({
