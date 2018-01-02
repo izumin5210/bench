@@ -6,14 +6,15 @@ import { compose, lifecycle } from "recompose"
 import { RootState } from "app/store"
 import { actions } from "app/store/auth"
 import { getOauthState } from "app/store/auth/selectors"
+import { getGithubClientId } from "app/store/config/selectors"
 
 import AuthLink from "./AuthLink"
 
 interface NeedsProps {
-  githubClientId: string
 }
 
 interface InjectedProps {
+  githubClientId: string
   oauthState: string | null
   createOauthState: () => any
 }
@@ -41,6 +42,7 @@ const LoginPage = compose<Props, Props>(
 //================================================================
 const withConnector = connect(
   (state: RootState) => ({
+    githubClientId: getGithubClientId(state),
     oauthState: getOauthState(state),
   }),
   (dispatch: Dispatch<any>) => ({
