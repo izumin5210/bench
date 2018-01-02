@@ -1,1 +1,3 @@
-export type FetchStatus = "none" | "loading" | "loaded" | "failed"
+type FetchStatus = "none" | "loading" | "loaded" | "failed"
+
+export default FetchStatus

@@ -13,7 +13,7 @@ import "common/typescript-fsa-redux-observable"
 // domain
 import AccessToken from "domain/AccessToken";
 import AuthRepository from "domain/AuthRepository"
-import { FetchStatus } from "domain/FetchStatus";
+import FetchStatus from "domain/FetchStatus";
 
 //  Actions
 //================================================================
