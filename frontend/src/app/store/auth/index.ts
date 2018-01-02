@@ -19,11 +19,13 @@ import FetchStatus from "domain/FetchStatus";
 //================================================================
 const actionCreator = actionCreatorFactory("auth")
 const createOauthState = actionCreator.async<{}, { state: string }>("craeteOauthState")
-const fetchAccessToken = actionCreator.async<{ code: string | null }, AccessToken>("getAccessToken")
+const fetchAccessToken = actionCreator.async<{ code: string | null }, AccessToken>("fetchAccessToken")
+const getAccessToken = actionCreator.async<{}, AccessToken>("getAccessToken")
 
 export const actions = {
   createOauthState: createOauthState.started,
   fetchAccessToken: fetchAccessToken.started,
+  getAccessToken: getAccessToken.started,
 }
 
 //  State & Reducer
@@ -48,6 +50,7 @@ const INITIAL_STATE: AuthState = {
 
 export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
   return reducerWithInitialState(initialState)
+    // fetchAccessToken
     .caseWithAction(fetchAccessToken.started, (state) => ({
       ...state,
       fetchStatus: {
@@ -63,6 +66,30 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
         accessToken: "loaded",
       },
     }))
+    // getAccessToken
+    .caseWithAction(getAccessToken.started, (state) => ({
+      ...state,
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "loading",
+      },
+    }))
+    .caseWithAction(getAccessToken.done, (state, { payload: { result: accessToken } }) => ({
+      ...state,
+      accessToken,
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "loaded",
+      },
+    }))
+    .caseWithAction(getAccessToken.failed, (state) => ({
+      ...state,
+      fetchStatus: {
+        ...state.fetchStatus,
+        accessToken: "failed",
+      },
+    }))
+    // createOauthState
     .caseWithAction(createOauthState.started, (state) => ({
       ...state,
       fetchStatus: {
