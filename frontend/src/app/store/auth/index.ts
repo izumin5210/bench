@@ -53,57 +53,36 @@ export function createAuthReducer(initialState: AuthState = INITIAL_STATE) {
     // fetchAccessToken
     .caseWithAction(fetchAccessToken.started, (state) => ({
       ...state,
-      fetchStatus: {
-        ...state.fetchStatus,
-        accessToken: "loading",
-      },
+      fetchStatus: { ...state.fetchStatus, accessToken: "loading" },
     }))
     .caseWithAction(fetchAccessToken.done, (state, { payload: { result: accessToken } }) => ({
       ...state,
       accessToken,
-      fetchStatus: {
-        ...state.fetchStatus,
-        accessToken: "loaded",
-      },
+      fetchStatus: { ...state.fetchStatus, accessToken: "loaded" },
     }))
     // getAccessToken
     .caseWithAction(getAccessToken.started, (state) => ({
       ...state,
-      fetchStatus: {
-        ...state.fetchStatus,
-        accessToken: "loading",
-      },
+      fetchStatus: { ...state.fetchStatus, accessToken: "loading" },
     }))
     .caseWithAction(getAccessToken.done, (state, { payload: { result: accessToken } }) => ({
       ...state,
       accessToken,
-      fetchStatus: {
-        ...state.fetchStatus,
-        accessToken: "loaded",
-      },
+      fetchStatus: { ...state.fetchStatus, accessToken: "loaded" },
     }))
     .caseWithAction(getAccessToken.failed, (state) => ({
       ...state,
-      fetchStatus: {
-        ...state.fetchStatus,
-        accessToken: "failed",
-      },
+      fetchStatus: { ...state.fetchStatus, accessToken: "failed" },
     }))
     // createOauthState
     .caseWithAction(createOauthState.started, (state) => ({
       ...state,
-      fetchStatus: {
-        ...state.fetchStatus,
-        oauthState: "loading",
-      },
+      fetchStatus: { ...state.fetchStatus, oauthState: "loading" },
     }))
     .caseWithAction(createOauthState.done, (state, { payload: { result: { state: oauthState }} }) => ({
       ...state,
       oauthState,
-      fetchStatus: {
-        ...state.fetchStatus,
-        oauthState: "loaded",
-      },
+      fetchStatus: { ...state.fetchStatus, oauthState: "loaded" },
     }))
     .build()
 }
