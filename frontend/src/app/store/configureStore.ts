@@ -1,22 +1,14 @@
 import { combineReducers, createStore, applyMiddleware, Reducer, Store } from "redux"
 import { combineEpics, createEpicMiddleware } from "redux-observable"
 import { routerReducer, routerMiddleware } from "react-router-redux"
-import { History } from "history";
 
 // reducers and epics
 import { createAuthReducer, createAuthEpic } from "./auth"
 import { createConfigReducer } from "./config"
 
-// dependencies
-import AuthRepository from "domain/AuthRepository"
-
 // types
-import Config from "common/config";
-import { RootState } from ".";
-
-interface Dependencies {
-  authRepository: AuthRepository
-}
+import { Config, Params } from "app/types"
+import { RootState } from "."
 
 function createRedcuer(config: Config): Reducer<RootState> {
   return combineReducers({
@@ -32,13 +24,7 @@ function createEpic() {
   )
 }
 
-interface ConfigureParams {
-  config: Config
-  dependencies: Dependencies
-  history: History
-}
-
-export default function configureStore({ config, history, dependencies }: ConfigureParams): Store<RootState> {
+export default function configureStore({ config, history, dependencies }: Params): Store<RootState> {
   const store = createStore(
     createRedcuer(config),
     applyMiddleware(

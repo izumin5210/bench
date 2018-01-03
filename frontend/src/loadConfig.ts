@@ -1,4 +1,4 @@
-import Config from "common/config";
+import { Config } from "app/types"
 
 const githubClientId = process.env.GITHUB_CLIENT_ID || ""
 
