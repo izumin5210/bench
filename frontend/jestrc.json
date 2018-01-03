@@ -11,5 +11,6 @@
     "jsx",
     "json",
     "node"
-  ]
+  ],
+  "setupTestFrameworkScriptFile": "<rootDir>src/setupTests.ts"
 }
