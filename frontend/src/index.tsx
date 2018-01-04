@@ -1,9 +1,25 @@
-import * as React from "react"
-import { render } from "react-dom"
+import { createBrowserHistory } from "history"
 
-import App from "./components/App"
+import { run } from "app"
+import loadConfig from "./loadConfig"
 
-render(
-  <App />,
-  document.getElementById("app"),
-)
+// dependencies
+import AuthRepository from "infra/AuthRepository"
+
+const config = loadConfig()
+const history = createBrowserHistory()
+const initialState = null
+
+const dependencies = {
+  authRepository: new AuthRepository(),
+}
+
+const container = document.getElementById("app")
+
+run({
+  config,
+  dependencies,
+  history,
+  initialState,
+  container,
+})
