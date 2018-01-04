@@ -15,7 +15,7 @@ export interface Params {
   config: Config
   dependencies: Dependencies
   history: History
-  initialState: RootState
+  initialState: RootState | null
 }
 
 function createRedcuer(config: Config): Reducer<RootState> {
@@ -33,14 +33,15 @@ function createEpic() {
 }
 
 export default function configureStore({ config, history, dependencies, initialState }: Params): Store<RootState> {
-  const store = createStore(
-    createRedcuer(config),
-    initialState,
-    applyMiddleware(
-      routerMiddleware(history),
-      createEpicMiddleware(createEpic(), { dependencies }),
-    ),
+  const reducer = createRedcuer(config)
+  const middleware = applyMiddleware(
+    routerMiddleware(history),
+    createEpicMiddleware(createEpic(), { dependencies }),
   )
 
-  return store
+  if (initialState == null) {
+    return createStore(reducer, middleware)
+  }
+
+  return createStore(reducer, initialState, middleware)
 }
