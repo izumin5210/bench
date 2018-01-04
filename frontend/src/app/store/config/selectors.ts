@@ -1,5 +1,5 @@
 import { createSelector } from "reselect"
-import { RootState } from "../"
+import RootState from "../RootState"
 
 export const getConfig = ({ config }: RootState) => config
 

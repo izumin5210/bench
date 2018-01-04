@@ -7,8 +7,16 @@ import { createAuthReducer, createAuthEpic } from "./auth"
 import { createConfigReducer } from "./config"
 
 // types
-import { Config, Params } from "app/types"
-import { RootState } from "."
+import { History } from "history"
+import { Config, Dependencies } from "app/types"
+import RootState from "./RootState"
+
+export interface Params {
+  config: Config
+  dependencies: Dependencies
+  history: History
+  initialState: RootState
+}
 
 function createRedcuer(config: Config): Reducer<RootState> {
   return combineReducers({
@@ -24,9 +32,10 @@ function createEpic() {
   )
 }
 
-export default function configureStore({ config, history, dependencies }: Params): Store<RootState> {
+export default function configureStore({ config, history, dependencies, initialState }: Params): Store<RootState> {
   const store = createStore(
     createRedcuer(config),
+    initialState,
     applyMiddleware(
       routerMiddleware(history),
       createEpicMiddleware(createEpic(), { dependencies }),

@@ -1,6 +1,3 @@
-import { History } from "history"
-import { RootState } from "app/store"
-
 // dependencies
 import AuthRepository from "domain/AuthRepository"
 
@@ -11,11 +8,4 @@ export interface Config {
 
 export interface Dependencies {
   authRepository: AuthRepository
-}
-
-export interface Params {
-  config: Config
-  dependencies: Dependencies
-  history: History
-  initialState: RootState
 }
